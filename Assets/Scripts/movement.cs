@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,55 +24,73 @@ public class movement : MonoBehaviour
         audiosource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
     }
-
     void FixedUpdate()
     {
         Thrusting();
         Rotating();
     }
-
     void Thrusting()
     {
         if (Thrust.IsPressed())
 
         {
-            if(!audiosource.isPlaying)
+            startthrusting();
+            
+        }
+        else
+        {
+            stopthrusting();
+        }
+    }
+    void startthrusting()
+    {
+        if(!audiosource.isPlaying)
         {audiosource.PlayOneShot(mainengine);
          thrustparticle.Play();}
 
             rb.AddRelativeForce(Vector3.up * thrustvalue * Time.deltaTime);
-            
-        }
-        else
-        {    thrustparticle.Stop();
-            audiosource.Stop();
-        }
     }
-
+     void stopthrusting()
+    {
+        thrustparticle.Stop();
+            audiosource.Stop();
+    }
     void Rotating()
     {
         float rotation = Rotate.ReadValue<float>();
 
         if (rotation > 0)
         {
-            rotatingfor(-rotatevalue);
-            leftparticle.Play();
-            
+           leftrotating();
             
         }
         else if (rotation < 0)
         {
-            rotatingfor(rotatevalue);
-            rightparticle.Play();
-            
+            rightrotating();
         }
         else
-        {rightparticle.Stop();
-            leftparticle.Stop();
+        {
+            stoprotating();
             
         }
     }
-
+    void leftrotating()
+    {
+         rotatingfor(-rotatevalue);
+            leftparticle.Play();
+            
+    }
+    void rightrotating()
+    {
+        rotatingfor(rotatevalue);
+            rightparticle.Play();
+            
+    }
+    void stoprotating()
+    {
+        rightparticle.Stop();
+            leftparticle.Stop();
+    }
     void rotatingfor(float rotate)
     {   rb.freezeRotation = true;
         transform.Rotate(Vector3.forward * Time.fixedDeltaTime * rotate);
@@ -81,7 +100,6 @@ public class movement : MonoBehaviour
         
         
     }
-
     void OnEnable()
     {
         Thrust.Enable();

@@ -1,7 +1,7 @@
 
-using System.Dynamic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class collision : MonoBehaviour
 {
@@ -17,16 +17,17 @@ public class collision : MonoBehaviour
     bool iscontrollable =false;
 
 
-     private void Start() 
+    private void Start() 
     {
         audiosource=GetComponent<AudioSource>();
 
         
     }
-
-
-
-   private void OnCollisionEnter(Collision other )
+    void Update()
+    {
+        DebugRespond();
+    }
+    private void OnCollisionEnter(Collision other )
     {
         if (iscontrollable) { return; }
 
@@ -42,16 +43,13 @@ public class collision : MonoBehaviour
             
             default:
                 aftercrash();
-                
-                
+
+
                 break;
 
                 
         }}
-       
-       
-       
-        void aftercrash()
+    void aftercrash()
     {   
         audiosource.Stop();
         crashparticle.Play();
@@ -72,11 +70,7 @@ public class collision : MonoBehaviour
 
         GetComponent<movement>().enabled = false;
      }
-
-
-
-
-        void ReloadLevel()
+    void ReloadLevel()
         {   int activescene = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(activescene);
             
@@ -84,7 +78,7 @@ public class collision : MonoBehaviour
 
 
         }
-        void nextlevel()
+    void nextlevel()
         {
             int activescene = SceneManager.GetActiveScene().buildIndex;
             int nextscene=activescene+1;
@@ -97,6 +91,13 @@ public class collision : MonoBehaviour
             
 
         }
-        
+    void DebugRespond()
+    {
+        if (Keyboard.current.lKey.wasPressedThisFrame)
+        {
+            nextlevel();
+        }
+    }
     }
 
+ 
